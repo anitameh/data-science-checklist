@@ -42,7 +42,7 @@ def convert_string_to_hour(s):
         return int(s[11:13])
 
 
-def convert_string_to_datetime(s, timezone_str):
+def convert_string_to_datetime(s, timezone_str='America/New_York'):
     '''
     :input string / float s: timestamp / NaN
     :input string timezone: e.g. 'US/Pacific'
@@ -55,7 +55,7 @@ def convert_string_to_datetime(s, timezone_str):
         return datetime_object.replace(tzinfo=timezone(timezone_str))
 
 
-def convert_datetime_to_number(d, timezone_str):
+def convert_datetime_to_number(d, timezone_str='America/New_York'):
     '''
     Ideally input should be a datetime object. 
     if not, return it. that's likely because it's a nan.
