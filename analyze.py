@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import numpy as np
 import pandas as pd
 
@@ -46,8 +48,11 @@ def report_overall_coverage(df):
 
 
 def report_column_coverage(col):
-    """
-    :input numpy.ndarray col:
+    """Report missing values.
+
+    Args:
+        col (numpy.ndarray): Column of dataset.
+        
     """
     count_missing_vals = col.isna().sum()
     print('# missing values:', count_missing_vals)
