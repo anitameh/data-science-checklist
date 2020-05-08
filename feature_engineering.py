@@ -25,6 +25,7 @@ def one_hot_encode(data, col):
     """
     encoder = OneHotEncoder(handle_unknown='ignore')
     encoder.fit(np.array(data[col]).reshape(-1, 1))
+    print('# of categories: {}'.format(len(encoder.categories_[0])))
 
     column_names = []
     for each_cat in encoder.categories_[0]:  # this is a list with an array as the first elt

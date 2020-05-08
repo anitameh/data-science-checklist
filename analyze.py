@@ -109,5 +109,8 @@ def find_outliers(col, multiplier=1.5, lower_percentile=25, upper_percentile=75)
     percent_outliers = 100*len(outliers_indices) / float(len(col.dropna()))
     print('% outliers:', percent_outliers)
     
-    return outliers_indices, len(outliers_indices), percent_outliers
+    nonoutliers_indices = np.where(col.dropna() <= upper_bound)[0]
+    
+    return outliers_indices, nonoutliers_indices, len(outliers_indices), percent_outliers
+
 
