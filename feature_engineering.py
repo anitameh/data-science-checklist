@@ -10,24 +10,32 @@ from pytz import timezone
 
 
 ## Transform a feature via one-hot encoding.
+## use one-hot encoding over label encoding if order doesn't matter
+## (https://www.analyticsvidhya.com/blog/2020/03/one-hot-encoding-vs-label-encoding-using-scikit-learn/)
 
 def one_hot_encode(data, col):
-    '''
-    :input pandas.DataFrame data:
-    :input numpy.ndarray col:
-    '''
+    """Converts inputted col into a data frame reflecting one-hot encoding.
+    
+    Args:
+        data (pandas.DataFrame): Dataset.
+        col (numpy.ndarray): Column of dataset.
+    
+    Returns:
+        Data frame with one hot encoding
+    """
     encoder = OneHotEncoder(handle_unknown='ignore')
     encoder.fit(np.array(data[col]).reshape(-1, 1))
-    print(encoder.categories_)
+    print('# of categories: {}'.format(len(encoder.categories_[0])))
 
     column_names = []
-    for each_cat in encoder.categories_:
+    for each_cat in encoder.categories_[0]:  # this is a list with an array as the first elt
         column_names.append(col + '_' + str(each_cat))
 
-    ohe_cancel_penalty = pd.DataFrame(encoder.transform(np.array(data[col]).reshape(-1, 1)).toarray(), columns=column_names)    
-    display(ohe_cancel_penalty.head())
+    ohe_col = pd.DataFrame(encoder.transform(np.array(data[col]).reshape(-1, 1)).toarray(), columns=column_names)    
+    display(ohe_col.head(10))
 
-    return ohe_cancel_penalty
+    return ohe_col
+
 
 ## Handling timestamps.
 
