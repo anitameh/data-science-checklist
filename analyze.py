@@ -12,52 +12,70 @@ import seaborn as sns
 
 ## Basic initial stats.
 
-def get_basic_stats(df, datecol):
+def get_alldata_stats(df, datecol=""):
+    """Get summary statistics about the all data.
+    Args:
+        df (pandas.DataFrame): Entire dataset.
+        datecol (numpy.ndarray): Column of dataset.
     """
-    :input pandas.dataframe df:
-    :input String datecol:
-    """
-    # number of rows
+    # number of rows in dataframe
     num_rows = len(df)
     print('total # of rows: {} \n'.format(num_rows))
 
-    # number of columns
+    # number of columns in entire dataframe
     num_cols = len(df.columns)
     print('total # of columns: {} \n'.format(num_cols))
     print(list(df.columns))
 
-    # number of unique items #TODO
-
     # date range for data
-    min_date = min(df[datecol])
-    max_date = max(df[datecol])
-    print(min_date)
-    print(max_date)
+    if datecol:
+        min_date = min(df[datecol])
+        max_date = max(df[datecol])
+        print(min_date)
+        print(max_date)
 
-    # geos covered #TODO
+    # coverage
+    total_percent_missing = (100*df.isna().sum().sum() / float(len(df)*len(df.columns)))
+    print("\n{:,.2f}% of the data is missing \n".format(round(total_percent_missing, 2)))
 
-    return (num_rows, num_cols)
+    # fully-empty columns
+    print(df.isna().sum())
 
-## Check coverage for the dataset.
+    return (num_rows, num_cols, total_percent_missing)
 
-def report_overall_coverage(df):
+
+def get_onecol_stats(df, col):
+    """Get summary statistics about the specified data column.
+    Args:
+        df (pandas.DataFrame): Entire dataset.
+        col (numpy.ndarray): Column of dataset.
     """
-    :input pandas.dataframe df:
-    """
-    return (100*df.isna().sum().sum() / float(len(df)*len(df.columns)))
+
+    # number of unique items
+    num_unique = len(np.unique(df[col]))
+    print(num_unique)
+    
+    # mean, std without NaN values
+    mean = np.nanmean(df[col])
+    std = np.nanstd(df[col])
+    print('mean of {} = {}'.format(col, mean))
+    print('std of {} = {}'.format(col, std))
+
+    return (num_unique, mean, std)
 
 
-def report_column_coverage(col):
+def report_column_coverage(df, col):
     """Report missing values.
 
     Args:
+        df (pandas.DataFrame): Entire dataset.
         col (numpy.ndarray): Column of dataset.
         
     """
-    count_missing_vals = col.isna().sum()
+    count_missing_vals = df[col].isna().sum()
     print('# missing values:', count_missing_vals)
     
-    percent_missing = 100*count_missing_vals / float(len(col))
+    percent_missing = 100*count_missing_vals / float(len(df[col]))
     print('% missing values:', percent_missing)
     
     print('# values:', len(col))
@@ -68,10 +86,11 @@ def report_column_coverage(col):
 ## Determining outliers.
 
 # Boxplot method. Why? Z-score biased. Other methods? DBScan, Isolation forests.
-def plot_outliers(col, title='', xlabel=''):
+def plot_outliers(df, col, title='', xlabel=''):
     """Visualizes outliers with a boxplot.
     
     Args:
+        df (pandas.DataFrame): Entire dataset.
         col (numpy.ndarray): Column of dataset.
         title (String): Title to use for plot.
         xlabel (String): Label to use for x-axis.
@@ -80,7 +99,7 @@ def plot_outliers(col, title='', xlabel=''):
         Boxplot of data in col.
     """
     plt.figure(figsize=[16,4])
-    sns.boxplot(col)
+    sns.boxplot(df[col])
     plt.title(title)
     plt.xlabel(xlabel)
     plt.show()
